@@ -1,0 +1,672 @@
+
+SQL*Plus: Release 21.0.0.0.0 - Production on Tue Sep 27 09:01:04 2022
+Version 21.3.0.0.0
+
+Copyright (c) 1982, 2021, Oracle.  All rights reserved.
+
+Enter user-name: sys
+Enter password:
+ERROR:
+ORA-28009: connection as SYS should be as SYSDBA or SYSOPER
+
+
+Enter user-name: system
+Enter password:
+Last Successful login time: Tue Sep 27 2022 08:54:51 +05:30
+
+Connected to:
+Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+SQL> create user vnd identified by vnd;
+create user vnd identified by vnd
+            *
+ERROR at line 1:
+ORA-65096: invalid common user or role name
+SQL> alter session set "_oracle_script"=true;
+
+Session altered.
+
+SQL> create user vnd identified by vnd;
+
+User created.
+
+SQL> grant all privileges to vnd;
+
+Grant succeeded.
+
+SQL> conn;
+Enter user-name: vnd
+Enter password:
+Connected.
+
+SQL> create table person(driver_id int primary key, name varchar(20), address varchar(10));
+
+Table created.
+
+SQL> desc person
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ DRIVER_ID                                 NOT NULL NUMBER(38)
+ NAME                                               VARCHAR2(20)
+ ADDRESS                                            VARCHAR2(10)
+
+SQL> insert into person values(&driver_id,'&name','&address');
+Enter value for driver_id: 101
+Enter value for name: nilesh
+Enter value for address: pune
+old   1: insert into person values(&driver_id,'&name','&address')
+new   1: insert into person values(101,'nilesh','pune')
+
+1 row created.
+
+SQL> /
+Enter value for driver_id: 102
+Enter value for name: ramesh
+Enter value for address: mumbai
+old   1: insert into person values(&driver_id,'&name','&address')
+new   1: insert into person values(102,'ramesh','mumbai')
+
+1 row created.
+
+SQL> /
+Enter value for driver_id: 103
+Enter value for name: samarth
+Enter value for address: pune
+old   1: insert into person values(&driver_id,'&name','&address')
+new   1: insert into person values(103,'samarth','pune')
+
+1 row created.
+
+SQL> /
+Enter value for driver_id: 104
+Enter value for name: shivani
+Enter value for address: mumbai
+old   1: insert into person values(&driver_id,'&name','&address')
+new   1: insert into person values(104,'shivani','mumbai')
+
+1 row created.
+
+SQL> /
+Enter value for driver_id: 105
+Enter value for name: anvit
+Enter value for address: madras
+old   1: insert into person values(&driver_id,'&name','&address')
+new   1: insert into person values(105,'anvit','madras')
+
+1 row created.
+
+SQL> select * from person;
+
+ DRIVER_ID NAME                 ADDRESS
+---------- -------------------- ----------
+       101 nilesh               pune
+       102 ramesh               mumbai
+       103 samarth              pune
+       104 shivani              mumbai
+       105 anvit                madras
+SQL> create table car(license varchar(20), model varchar(20), year int);
+
+Table created.
+
+SQL> desc car;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ LICENSE                                            VARCHAR2(20)
+ MODEL                                              VARCHAR2(20)
+ YEAR                                               NUMBER(38)
+
+SQL> insert into car values('abc123','breeza',2018);
+
+1 row created.
+
+SQL> insert into car values('abc456','swift',2019);
+
+1 row created.
+
+SQL> insert into car values('xyz456','creata',2019);
+
+1 row created.
+
+SQL> insert into car values('xyz123','i20',2020);
+
+1 row created.
+
+SQL> insert into car values('abcxyz123','audi',2020);
+
+1 row created.
+
+SQL> select * from car;
+
+LICENSE              MODEL                      YEAR
+-------------------- -------------------- ----------
+abc123               breeza                     2018
+abc456               swift                      2019
+xyz456               creata                     2019
+xyz123               i20                        2020
+abcxyz123            audi                       2020
+
+SQL> create table accident(report_no int primary key, date_acc date, location varchar(20));
+
+Table created.
+
+SQL> desc accident;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ REPORT_NO                                 NOT NULL NUMBER(38)
+ DATE_ACC                                           DATE
+ LOCATION                                           VARCHAR2(20)
+
+SQL> insert into accident values(11,'12/jan/2012','pune');
+
+1 row created.
+
+SQL> insert into accident values(10,'1/jul/2018','pune');
+
+1 row created.
+
+SQL> insert into accident values(23,'1/jul/2018','mumbai');
+
+1 row created.
+
+SQL> insert into accident values(7,'9/aug/2019','nagpur');
+
+1 row created.
+
+SQL> insert into accident values(6,'9/aug/2019','nashik');
+
+1 row created.
+
+SQL> select * from accident;
+
+ REPORT_NO DATE_ACC  LOCATION
+---------- --------- --------------------
+        11 12-JAN-12 pune
+        10 01-JUL-18 pune
+        23 01-JUL-18 mumbai
+         7 09-AUG-19 nagpur
+         6 09-AUG-19 nashik
+
+SQL>SQL> alter table car add constraint pk1 primary key(license);
+
+Table altered.
+
+SQL> create table owns(driver_id int references person(driver_id), license varchar(20) references car(license));
+
+Table created.
+
+SQL> desc owns;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ DRIVER_ID                                          NUMBER(38)
+ LICENSE                                            VARCHAR2(20)
+
+SQL> insert into owns values(101,'abc123');
+
+1 row created.
+
+SQL> insert into owns values(103,'abc456');
+
+1 row created.
+
+SQL> insert into owns values(102,'abcxyz123');
+
+1 row created.
+
+SQL> select * from owns;
+
+ DRIVER_ID LICENSE
+---------- --------------------
+       101 abc123
+       103 abc456
+       102 abcxyz123
+
+SQL> create table participated(driver_id int references person(driver_id), model varchar(20),report_no int references accident(report_no),damage_amount int);
+
+Table created.
+
+SQL> desc participated;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ DRIVER_ID                                          NUMBER(38)
+ MODEL                                              VARCHAR2(20)
+ REPORT_NO                                          NUMBER(38)
+ DAMAGE_AMOUNT                                      NUMBER(38)
+
+SQL> insert into participated values(101,'breeza',23,10000);
+
+1 row created.
+
+SQL> insert into participated values(103,'swift',7,20000);
+
+1 row created.
+
+SQL> insert into participated values(104,'i20',11,5000);
+
+1 row created.
+
+SQL> select * from participated;
+
+ DRIVER_ID MODEL                 REPORT_NO DAMAGE_AMOUNT
+---------- -------------------- ---------- -------------
+       101 breeza                       23         10000
+       103 swift                         7         20000
+       104 i20                          11          5000
+
+SQL>SQL> create table employee(employee_name varchar(10) primary key,street varchar(15),city varchar(15));
+
+Table created.
+
+SQL> desc employee;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ EMPLOYEE_NAME                             NOT NULL VARCHAR2(10)
+ STREET                                             VARCHAR2(15)
+ CITY                                               VARCHAR2(15)
+
+SQL> insert into employee values('nandini','JM road','pune');
+
+1 row created.
+
+SQL> insert into employee values('anvit','FC road','pune');
+
+1 row created.
+
+SQL> insert into employee values('aayushi','Fashion street','mumbai');
+
+1 row created.
+
+SQL> insert into employee values('nilesh','xyz','nagar');
+
+1 row created.
+
+SQL> insert into employee values('anvesh','abc','nashik');
+
+1 row created.
+
+SQL> select * from employee;
+
+EMPLOYEE_N STREET          CITY
+---------- --------------- ---------------
+nandini    JM road         pune
+anvit      FC road         pune
+aayushi    Fashion street  mumbai
+nilesh     xyz             nagar
+anvesh     abc             nashik
+
+SQL> create table company(company_name varchar(20) primary key,city varchar(10));
+
+Table created.
+
+SQL> desc company;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ COMPANY_NAME                              NOT NULL VARCHAR2(20)
+ CITY                                               VARCHAR2(10)
+
+SQL> insert into company values('cognizant','pune');
+
+1 row created.
+
+SQL> insert into company values('accenture','pune');
+
+1 row created.
+
+SQL> insert into company values('mahindra','mumbai');
+
+1 row created.
+
+SQL> insert into company values('mindtree','mumbai');
+
+1 row created.
+
+SQL> insert into company values('syntel','madras');
+
+1 row created.
+
+SQL> select * from company;
+
+COMPANY_NAME         CITY
+-------------------- ----------
+cognizant            pune
+accenture            pune
+mahindra             mumbai
+mindtree             mumbai
+syntel               madras
+
+SQL> create table works(employee_name varchar(20) references employee(employee_name),company_name varchar(20) references company(company_name),salary int);
+
+Table created.
+
+SQL> desc works;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ EMPLOYEE_NAME                                      VARCHAR2(20)
+ COMPANY_NAME                                       VARCHAR2(20)
+ SALARY                                             NUMBER(38)
+
+SQL> insert into works values('aayushi','cognizant',45000);
+
+1 row created.
+
+SQL> insert into works values('nandini','mahindra',50000);
+
+1 row created.
+
+SQL> insert into works values('nilesh','mindtree',60000);
+
+1 row created.
+
+SQL> select * from works;
+
+EMPLOYEE_NAME        COMPANY_NAME             SALARY
+-------------------- -------------------- ----------
+aayushi              cognizant                 45000
+nandini              mahindra                  50000
+nilesh               mindtree                  60000
+
+SQL> create table manages(employee_name varchar(20) references employee(employee_name),manager_name varchar(20));
+
+Table created.
+
+SQL> desc manages;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ EMPLOYEE_NAME                                      VARCHAR2(20)
+ MANAGER_NAME                                       VARCHAR2(20)
+
+SQL> insert into manages values('aayushi','xyz');
+
+1 row created.
+
+SQL> insert into manages values('anvit','abc');
+
+1 row created.
+
+SQL> insert into manages values('nandini','pqr');
+
+1 row created.
+
+SQL> select * from manages;
+
+EMPLOYEE_NAME        MANAGER_NAME
+-------------------- --------------------
+aayushi              xyz
+anvit                abc
+nandini              pqr
+
+1)	Create view with the employee_name, company_name  by using above tables.
+
+
+SQL> create view view1 as select employee_name,company_name from works;
+
+View created.
+
+SQL> select * from view1;
+
+EMPLOYEE_NAME        COMPANY_NAME
+-------------------- --------------------
+aayushi              cognizant
+nandini              mahindra
+nilesh               mindtree
+
+2)Create index for employee & participated table.
+
+SQL> create index emp_city_idx on employee(city);
+
+Index created.
+
+SQL> create index part_driver_id on participated(driver_id);
+
+Index created.
+
+3)	Create sequence for person & insert 4 records using sequence.
+
+SQL> create sequence s1 increment by 10 start with 1 maxvalue 50 nocycle;
+
+Sequence created.
+
+SQL> insert into person (driver_id) values (s1.nextval);
+
+1 row created.
+
+SQL> select * from person;
+
+ DRIVER_ID NAME                 ADDRESS
+---------- -------------------- ----------
+       101 nilesh               pune
+       102 ramesh               mumbai
+       103 samarth              pune
+       104 shivani              mumbai
+       105 anvit                madras
+         1
+
+6 rows selected.
+
+SQL> insert into person (driver_id) values (s1.nextval);
+
+1 row created.
+
+SQL> insert into person (driver_id) values (s1.nextval);
+
+1 row created.
+
+SQL> insert into person (driver_id) values (s1.nextval);
+
+1 row created.
+
+SQL> select * from person;
+
+ DRIVER_ID NAME                 ADDRESS
+---------- -------------------- ----------
+       101 nilesh               pune
+       102 ramesh               mumbai
+       103 samarth              pune
+       104 shivani              mumbai
+       105 anvit                madras
+         1
+        11
+        21
+        31
+
+9 rows selected.
+
+4)	Create the synonym for table participated & company. Display the record using this table.
+      Update the record using the synonym tables.
+
+
+SQL> create synonym s1_part for participated;
+
+Synonym created.
+
+SQL> select * from s1_part;
+
+ DRIVER_ID MODEL                 REPORT_NO DAMAGE_AMOUNT
+---------- -------------------- ---------- -------------
+       101 breeza                       23         10000
+       103 swift                         7         20000
+       104 i20                          11          5000
+
+SQL> update s1_part set damage_amount=25000 where report_no=11;
+
+1 row updated.
+
+SQL> select * from s1_part;
+
+ DRIVER_ID MODEL                 REPORT_NO DAMAGE_AMOUNT
+---------- -------------------- ---------- -------------
+       101 breeza                       23         10000
+       103 swift                         7         20000
+       104 i20                          11         25000
+
+
+SQL> create synonym s1_comp for company;
+
+Synonym created.
+
+SQL> select * from s1_comp;
+
+COMPANY_NAME         CITY
+-------------------- ----------
+cognizant            pune
+accenture            pune
+mahindra             mumbai
+mindtree             mumbai
+syntel               madras
+
+SQL> update s1_comp set city='nashik' where company_name='accenture';
+
+1 row updated.
+
+SQL> select * from s1_comp;
+
+COMPANY_NAME         CITY
+-------------------- ----------
+cognizant            pune
+accenture            nashik
+mahindra             mumbai
+mindtree             mumbai
+syntel               madras
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

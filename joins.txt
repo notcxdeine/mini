@@ -1,0 +1,158 @@
+1) Find the names of employees who work for First Bank Coorporation.
+
+SQL> SELECT * FROM 
+2 EMPLOYEE e, WORKS w where e.emp_name = w.emp_name and w.comp_name = 'FBC';
+
+| emp_name | street         | city       | comp_name | salary |
+|----------|----------------|------------|-----------|--------|
+| Rajesh   | Sharma colony  | Pune       | FBC       | 95000  |
+| Jack     | Bernard road   | Sydney     | FBC       | 230000 |
+
+2) Find the names and cities of residence of all employees who work for First Bank Coorporation.
+
+SQL> SELECT emp_name, city FROM employee 
+2 WHERE employee_name=(SELECT emp_name FROM works WHERE comp_name='FBC')
+
+
+| emp_name | city      |
+|----------|-----------|
+| Rajesh   | Pune      |
+| Jack     | Sydney    |
+
+3) Find the names, street addresses, and cities of residence of all employees who work for First Bank Coorporation and earn more than $10000. 
+
+SQL> SELECT employee_name, street, city FROM employee 
+2 WHERE employee_name=(SELECT emp_name FROM works WHERE comp_name='FBC' AND salary > 10000)
+
+| employee_name | street        | city       |
+|---------------|---------------|------------|
+| Jack          | Bernard road  | Sydney     |
+
+4) Find all employees in the database who lives in the same cities as tha companies for which they work.
+
+SQL> SELECT e.emp_name, e.street, e.city FROM EMPLOYEE e
+2 INNER JOIN WORKS w ON e.EMP_NAME = w.EMP_NAME
+3 INNER JOIN COMPANY c ON c.COMP_NAME = w.COMP_NAME
+4 WHERE e.CITY = c.CITY
+
+| emp_name | street         | city       |
+|----------|----------------|------------|
+| Rajesh   | Sharma colony  | Pune       |
+| Jay      | Green road     | Pune       |
+| Neil     | San street     | California |
+| John     | San street     | California |
+
+5) Find all employees in the database who lives in the same cities and on the same streets as do their manager. 
+
+SQL> SELECT * FROM EMPLOYEE e INNER JOIN MANAGES m1 ON e.emp_name = m1.emp_name
+2 where e.city = (select e.city from employee e where e.emp_name = m1.manager_name)
+3 and e.street = (select e.street from employee e where e.emp_name = m1.manager_name);
+
+| emp_name | street        | city       | manager_name | manager_street | manager_city |
+|----------|---------------|------------|--------------|----------------|--------------|
+| Neil     | San street    | California | Neil         | San street     | California   |
+
+6) Find all employees in the database who do not work for First Bank Coorporation.
+
+SQL> SELECT * FROM 
+2 EMPLOYEE e, WORKS w where e.emp_name = w.emp_name and w.comp_name != 'FBC';
+
+| EMP_NAME | STREET          | CITY       | COMP_NAME | SALARY  |
+|----------|-----------------|------------|-----------|---------|
+| Jay      | Green road      | Pune       | SBC       | 85000   |
+| John     | San street      | California | SBC       | 150000  |
+
+
+7) Find all employees in the database who earn more than each employee of  Small  Bank  
+Coorporation.
+
+SQL> SELECT EMP_NAME FROM works WHERE
+2 salary > max(Select salary from works where company_name='SBC')
+
+| EMP_NAME |
+|----------|
+| Jack     |
+| John     |
+
+8) Assume that the company is may be located in several cities. Find all companies located in every city in which Small Bank Coorporation is located.
+
+SQL> SELECT comp_name FROM works WHERE city=(SELECT city FROM company WHERE comp_name='SBC');
+
+| comp_name |
+|-----------|
+| SBC       |
+
+9) Find all employees who earn more than the average salary of all employees of their companies.
+
+SQL> SELECT * FROM employee e1
+2 INNER JOIN works w1
+3 ON e1.emp_name=w1.emp_name
+4 WHERE salary > (select avg(salary) from works where comp_name=w1.comp_name);
+
+| EMP_NAME | STREET          | CITY       | EMP_NAME | COMP_NAME | SALARY |
+|----------|-----------------|------------|----------|-----------|--------|
+| Rajesh   | Sharma colony   | Pune       | Rajesh   | FBC       | 95000  |
+| Jack     | Bernard road    | Sydney     | Jack     | FBC       | 230000 |
+| Jay      | Green road      | Pune       | Jay      | SBC       | 85000  |
+| John     | San street      | California | John     | SBC       | 150000 |
+
+10) Find the company that has the most employees.
+
+SQL> SELECT comp_name, COUNT(*) as employees FRoM works
+2 GROUP BY comp_name
+3 ORDER BY employees DESC
+4 LIMIT 1;
+
+| comp_name | employees |
+|-----------|-----------|
+|   FBC     |     2     |
+
+
+11) Find the company that has the smallest payroll.
+
+SQL> SELECT comp_name, SUM(salary) payroll FROM works
+2 GROUP BY comp_name
+3 ORDER BY SUM(salary) ASC
+4 LIMIT 1;
+
+| comp_name | payroll |
+|-----------|---------|
+| FBC       | 325000  |
+
+12) Find those companies whose employees earn a higher salary, on average, than the average salary at First Bank Coorporation. 
+
+SQL> SELECT comp_name
+2 FROM works
+3 GROUP BY comp_name
+4 HAVING AVG(salary) > (
+5     SELECT AVG(salary)
+6     FROM works
+7     WHERE comp_name = 'First Bank Coorperation'
+8 );
+
+| comp_name |
+|-----------|
+| SBC       |
+
+13) Modify the database so that "Jones" now lives in Newtown.
+
+SQL> UPDATE employee
+2 SET city='Newton'
+3 WHERE emp_name='Jones';
+
+updated 1 row succesfully.
+
+14) Give all employees of "First Bank Coorporation" a 10% raise
+
+SQL> UPDATE works
+2 SET salary = salary + 0.1 * salary;
+3 WHERE comp_name = 'First Bank Coorporation';
+
+updated 2 rows successfully.
+
+15) Delete all tuples in the "Works" relation for employees of "Small Bank Coorporation".
+
+SQL> DELETE FROM works
+2 WHERE comp_name = 'First Bank Coorporation';
+
+deleted 2 rows successfully.

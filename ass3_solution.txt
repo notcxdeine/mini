@@ -1,0 +1,483 @@
+SQL> create table department(deptno int primary key,dname varchar(20),location varchar(20));
+
+Table created.
+
+SQL> desc department;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ DEPTNO                                    NOT NULL NUMBER(38)
+ DNAME                                              VARCHAR2(20)
+ LOCATION                                           VARCHAR2(20)
+
+SQL> insert into department values(10,'Accounting','Mumbai');
+
+1 row created.
+
+SQL> insert into department values(20,'research','pune');
+
+1 row created.
+
+SQL> insert into department values(30,'sales','nashik');
+
+1 row created.
+
+SQL> insert into department values(40,'operations','nagpur');
+
+1 row created.
+
+SQL> commit;
+
+Commit complete.
+
+SQL> select * from department;
+
+    DEPTNO DNAME                LOCATION
+---------- -------------------- --------------------
+        10 Accounting           Mumbai
+        20 research             pune
+        30 sales                nashik
+        40 operations           nagpur
+
+create table employee(empno int primary key,ename varchar(15),job varchar(15),mgr int,joined_date date,salary int,
+commission int,deptno int references department(deptno),address varchar(20));
+
+Table created.
+
+SQL> desc employee;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ EMPNO                                     NOT NULL NUMBER(38)
+ ENAME                                              VARCHAR2(15)
+ JOB                                                VARCHAR2(15)
+ MGR                                                NUMBER(38)
+ JOINED_DATE                                        DATE
+ SALARY                                             NUMBER(38)
+ COMMISSION                                         NUMBER(38)
+ DEPTNO                                             NUMBER(38)
+ ADDRESS                                            VARCHAR2(20)
+
+SQL> insert into employee values(1001,'Nilesh joshi','Clerk',1005,'17-dec-95',2800,600,20,'Nashik');
+
+1 row created.
+
+SQL> insert into employee values(1002,'Avinash pawar','Salesman',1003,'20-feb-96',5000,1200,30,'Nagpur');
+
+1 row created.
+
+SQL> insert into employee values(1003,'Amit kumar','Manager',1004,'2-apr-86',2000,null,30,'Pune');
+
+1 row created.
+
+SQL> insert into employee values(1004,'Nitin kulkarni','President',null,'19-apr-86',50000,null,10,'Mumbai');
+
+1 row created.
+
+SQL> insert into employee values(1005,'Niraj Sharma','Analyst',1003,'3-dec-98',12000,null,20,'Satara');
+
+1 row created.
+
+SQL> insert into employee values(1006,'Pushkar deshpande','Salesman',1003,'1-sep-96',6500,1500,30,'Pune');
+insert into employee values(1006,'Pushkar deshpande','Salesman',1003,'1-sep-96',6500,1500,30,'Pune')
+                                 *
+ERROR at line 1:
+ORA-12899: value too large for column "SYSTEM"."EMPLOYEE"."ENAME" (actual: 17,
+maximum: 15)
+
+SQL> insert into employee values(1006,'Pushkardesh','Salesman',1003,'1-sep-96',6500,1500,30,'Pune');
+
+1 row created.
+
+SQL> insert into employee values(1007,'Sumit patil','Manager',1004,'1-may-91',25000,null,20,'Mumbai');
+
+1 row created.
+
+SQL> insert into employee values(1008,'Ravi sawant','Analyst',1007,'17-nov-95',10000,null,10,'Amaravati');
+
+1 row created.
+
+SQL> select * from employee;
+
+     EMPNO ENAME           JOB                    MGR JOINED_DA     SALARY COMMISSION     DEPTNO ADDRESS
+---------- --------------- --------------- ---------- --------- ---------- ---------- ---------- --------------------
+      1001 Nilesh joshi    Clerk                 1005 17-DEC-95       2800        600         20 Nashik
+      1002 Avinash pawar   Salesman              1003 20-FEB-96       5000       1200         30 Nagpur
+      1003 Amit kumar      Manager               1004 02-APR-86       2000                    30 Pune
+      1004 Nitin kulkarni  President                  19-APR-86      50000                    10 Mumbai
+      1005 Niraj Sharma    Analyst               1003 03-DEC-98      12000                    20 Satara
+      1006 Pushkardesh     Salesman              1003 01-SEP-96       6500       1500         30 Pune
+      1007 Sumit patil     Manager               1004 01-MAY-91      25000                    20 Mumbai
+      1008 Ravi sawant     Analyst               1007 17-NOV-95      10000                    10 Amaravati
+
+8 rows selected.
+
+
+5)Write a query to display employee information. Write a name of column explicitly.
+
+SQL> select empno,ename,job,mgr,joined_date,salary,commission,deptno,address from employee;
+
+     EMPNO ENAME           JOB                    MGR JOINED_DA     SALARY COMMISSION     DEPTNO ADDRESS
+---------- --------------- --------------- ---------- --------- ---------- ---------- ---------- --------------------
+      1001 Nilesh joshi    Clerk                 1005 17-DEC-95       2800        600         20 Nashik
+      1002 Avinash pawar   Salesman              1003 20-FEB-96       5000       1200         30 Nagpur
+      1003 Amit kumar      Manager               1004 02-APR-86       2000                    30 Pune
+      1004 Nitin kulkarni  President                  19-APR-86      50000                    10 Mumbai
+      1005 Niraj Sharma    Analyst               1003 03-DEC-98      12000                    20 Satara
+      1006 Pushkardesh     Salesman              1003 01-SEP-96       6500       1500         30 Pune
+      1007 Sumit patil     Manager               1004 01-MAY-91      25000                    20 Mumbai
+      1008 Ravi sawant     Analyst               1007 17-NOV-95      10000                    10 Amaravati
+
+8 rows selected.
+
+6)Create a query to display unique jobs from the table.
+SQL> select distinct(job) from employee;
+
+JOB
+---------------
+Salesman
+President
+Clerk
+Manager
+Analyst
+
+7)Change the location of dept 40  to Banglore instead of Nagpur.
+SQL> update department set location='Banglore' where deptno=40;
+
+1 row updated.
+
+SQL> select * from department;
+
+    DEPTNO DNAME                LOCATION
+---------- -------------------- --------------------
+        10 Accounting           Mumbai
+        20 research             pune
+        30 sales                nashik
+        40 operations           Banglore
+
+8)Change the name of the employees 1003 to Nikhil Gosavi.
+SQL> select * from department;
+
+    DEPTNO DNAME                LOCATION
+---------- -------------------- --------------------
+        10 Accounting           Mumbai
+        20 research             pune
+        30 sales                nashik
+        40 operations           Banglore
+
+SQL> update employee set ename='nikhil gosavi' where empno=1003;
+
+1 row updated.
+
+SQL> select * from employee;
+
+     EMPNO ENAME           JOB                    MGR JOINED_DA     SALARY COMMISSION     DEPTNO ADDRESS
+---------- --------------- --------------- ---------- --------- ---------- ---------- ---------- --------------------
+      1001 Nilesh joshi    Clerk                 1005 17-DEC-95       2800        600         20 Nashik
+      1002 Avinash pawar   Salesman              1003 20-FEB-96       5000       1200         30 Nagpur
+      1003 nikhil gosavi   Manager               1004 02-APR-86       2000                    30 Pune
+      1004 Nitin kulkarni  President                  19-APR-86      50000                    10 Mumbai
+      1005 Niraj Sharma    Analyst               1003 03-DEC-98      12000                    20 Satara
+      1006 Pushkardesh     Salesman              1003 01-SEP-96       6500       1500         30 Pune
+      1007 Sumit patil     Manager               1004 01-MAY-91      25000                    20 Mumbai
+      1008 Ravi sawant     Analyst               1007 17-NOV-95      10000                    10 Amaravati
+
+8 rows selected.
+
+9)Delete Pushkar deshpande from employee table.
+
+SQL> delete from employee where ename='Pushkardesh';
+
+1 row deleted.
+
+SQL> select * from employee;
+
+     EMPNO ENAME           JOB                    MGR JOINED_DA     SALARY COMMISSION     DEPTNO ADDRESS
+---------- --------------- --------------- ---------- --------- ---------- ---------- ---------- --------------------
+      1001 Nilesh joshi    Clerk                 1005 17-DEC-95       2800        600         20 Nashik
+      1002 Avinash pawar   Salesman              1003 20-FEB-96       5000       1200         30 Nagpur
+      1003 nikhil gosavi   Manager               1004 02-APR-86       2000                    30 Pune
+      1004 Nitin kulkarni  President                  19-APR-86      50000                    10 Mumbai
+      1005 Niraj Sharma    Analyst               1003 03-DEC-98      12000                    20 Satara
+      1007 Sumit patil     Manager               1004 01-MAY-91      25000                    20 Mumbai
+      1008 Ravi sawant     Analyst               1007 17-NOV-95      10000                    10 Amaravati
+
+7 rows selected.
+
+10)Create a table department_temp table from deptarment table, only create the structure not content.
+
+SQL> create table department_temp as select * from department where 1=2;
+
+Table created.
+
+SQL> desc department_temp;
+ Name                                                                                Null?    Type
+ ----------------------------------------------------------------------------------- -------- --------------------------------------------------------
+ DEPTNO                                                                                       NUMBER(38)
+ DNAME                                                                                        VARCHAR2(20)
+ LOCATION                                                                                     VARCHAR2(20)
+
+SQL> select * from department_temp;
+
+no rows selected
+
+11)	Insert rows into department_temp table from deptarment table
+
+SQL> insert into department_temp select * from department;
+
+4 rows created.
+
+SQL> select * from department_temp;
+
+    DEPTNO DNAME                LOCATION
+---------- -------------------- --------------------
+        10 Accounting           Mumbai
+        20 research             pune
+        30 sales                nashik
+        40 operations           Banglore
+
+12)	Display the list of employee whose salary between 5000 and 20000.
+
+SQL> select * from employee where salary between 5000 and 20000;
+
+     EMPNO ENAME           JOB                    MGR JOINED_DA     SALARY COMMISSION     DEPTNO ADDRESS
+---------- --------------- --------------- ---------- --------- ---------- ---------- ---------- --------------------
+      1002 Avinash pawar   Salesman              1003 20-FEB-96       5000       1200         30 Nagpur
+      1005 Niraj Sharma    Analyst               1003 03-DEC-98      12000                    20 Satara
+      1008 Ravi sawant     Analyst               1007 17-NOV-95      10000                    10 Amaravati
+
+13)	Display the list of employee excluding job title as ‘salesman’.
+
+
+SQL> select * from employee where job!='Salesman';
+
+     EMPNO ENAME           JOB                    MGR JOINED_DA     SALARY COMMISSION     DEPTNO ADDRESS
+---------- --------------- --------------- ---------- --------- ---------- ---------- ---------- --------------------
+      1001 Nilesh joshi    Clerk                 1005 17-DEC-95       2800        600         20 Nashik
+      1003 nikhil gosavi   Manager               1004 02-APR-86       2000                    30 Pune
+      1004 Nitin kulkarni  President                  19-APR-86      50000                    10 Mumbai
+      1005 Niraj Sharma    Analyst               1003 03-DEC-98      12000                    20 Satara
+      1007 Sumit patil     Manager               1004 01-MAY-91      25000                    20 Mumbai
+      1008 Ravi sawant     Analyst               1007 17-NOV-95      10000                    10 Amaravati
+
+6 rows selected.
+14)	Display all those employees whose job title is either  ‘manager’ or ‘analyst’(write by using OR & IN operator).
+
+
+SQL> select * from employee where job='Manager' or job='Analyst';
+
+     EMPNO ENAME           JOB                    MGR JOINED_DA     SALARY COMMISSION     DEPTNO ADDRESS
+---------- --------------- --------------- ---------- --------- ---------- ---------- ---------- --------------------
+      1003 nikhil gosavi   Manager               1004 02-APR-86       2000                    30 Pune
+      1005 Niraj Sharma    Analyst               1003 03-DEC-98      12000                    20 Satara
+      1007 Sumit patil     Manager               1004 01-MAY-91      25000                    20 Mumbai
+      1008 Ravi sawant     Analyst               1007 17-NOV-95      10000                    10 Amaravati
+
+SQL> select * from employee where job in('Manager','Analyst');
+
+     EMPNO ENAME           JOB                    MGR JOINED_DA     SALARY COMMISSION     DEPTNO ADDRESS
+---------- --------------- --------------- ---------- --------- ---------- ---------- ---------- --------------------
+      1003 nikhil gosavi   Manager               1004 02-APR-86       2000                    30 Pune
+      1005 Niraj Sharma    Analyst               1003 03-DEC-98      12000                    20 Satara
+      1007 Sumit patil     Manager               1004 01-MAY-91      25000                    20 Mumbai
+      1008 Ravi sawant     Analyst               1007 17-NOV-95      10000                    10 Amaravati
+
+15)	Display the employee name & department number of all employees in dept 10,20,30 & 40.
+
+
+SQL> select empno,deptno from employee where deptno in(10,20,30,40);
+
+     EMPNO     DEPTNO
+---------- ----------
+      1001         20
+      1002         30
+      1003         30
+      1004         10
+      1005         20
+      1007         20
+      1008         10
+
+7 rows selected.
+16)	Display the employee number, name, job & commission of all employees who do not get any commission.
+
+
+SQL> select empno,ename,job,commission from employee where commission is null;
+
+     EMPNO ENAME           JOB             COMMISSION
+---------- --------------- --------------- ----------
+      1003 nikhil gosavi   Manager
+      1004 Nitin kulkarni  President
+      1005 Niraj Sharma    Analyst
+      1007 Sumit patil     Manager
+      1008 Ravi sawant     Analyst
+
+17)	Display the name & salary of all employees whose salary not in the range of 5000 & 10000.
+
+SQL> select ename,salary from employee where salary not between 5000 and 10000;
+
+ENAME               SALARY
+--------------- ----------
+Nilesh joshi          2800
+nikhil gosavi         2000
+Nitin kulkarni       50000
+Niraj Sharma         12000
+Sumit patil          25000
+
+18)	Find all names & joined date of employees whose names starts with ‘A’.
+
+SQL> select ename,joined_date from employee where ename like 'A%';
+
+ENAME           JOINED_DA
+--------------- ---------
+Avinash pawar   20-FEB-96
+
+
+19)	 Find all names of employees having ‘i’ as a second letter in their names.
+
+SQL> select ename from employee where ename like '_i%';
+
+ENAME
+---------------
+Nilesh joshi
+nikhil gosavi
+Nitin kulkarni
+Niraj Sharma
+
+20)	Find employee number, name of employees whose commission is not null.
+
+SQL> select empno,ename from employee where commission is not null;
+
+     EMPNO ENAME
+---------- ---------------
+      1001 Nilesh joshi
+      1002 Avinash pawar
+
+21)	Display all employee information in the descending order of employee number.
+
+
+SQL> select * from employee order by empno;
+
+     EMPNO ENAME           JOB                    MGR JOINED_DA     SALARY COMMISSION     DEPTNO ADDRESS
+---------- --------------- --------------- ---------- --------- ---------- ---------- ---------- --------------------
+      1001 Nilesh joshi    Clerk                 1005 17-DEC-95       2800        600         20 Nashik
+      1002 Avinash pawar   Salesman              1003 20-FEB-96       5000       1200         30 Nagpur
+      1003 nikhil gosavi   Manager               1004 02-APR-86       2000                    30 Pune
+      1004 Nitin kulkarni  President                  19-APR-86      50000                    10 Mumbai
+      1005 Niraj Sharma    Analyst               1003 03-DEC-98      12000                    20 Satara
+      1007 Sumit patil     Manager               1004 01-MAY-91      25000                    20 Mumbai
+      1008 Ravi sawant     Analyst               1007 17-NOV-95      10000                    10 Amaravati
+
+7 rows selected.
+
+22)	Display the minimum, maximum, sum & average salary of each job type.
+
+SQL> select max(salary),min(salary),avg(salary),sum(salary),job from employee group by job;
+
+MAX(SALARY) MIN(SALARY) AVG(SALARY) SUM(SALARY) JOB
+----------- ----------- ----------- ----------- ---------------
+       5000        5000        5000        5000 Salesman
+      50000       50000       50000       50000 President
+       2800        2800        2800        2800 Clerk
+      25000        2000       13500       27000 Manager
+      12000       10000       11000       22000 Analyst
+23)	Write a query to display the number of employee with the same department.
+SQL> select count(empno),deptno from employee group by deptno;
+
+COUNT(EMPNO)     DEPTNO
+------------ ----------
+           2         30
+           2         10
+           3         20
+24)	Select employee number, ename according to the annual salary in ascending order.
+
+
+SQL> select empno,ename,12*salary "annual_salary" from employee order by 'annual_salary';
+
+     EMPNO ENAME           annual_salary
+---------- --------------- -------------
+      1001 Nilesh joshi            33600
+      1002 Avinash pawar           60000
+      1003 nikhil gosavi           24000
+      1004 Nitin kulkarni         600000
+      1005 Niraj Sharma           144000
+      1007 Sumit patil            300000
+      1008 Ravi sawant            120000
+
+7 rows selected.
+
+25)	Find the department number, maximum salary where the maximum salary is greater than 5000.
+
+SQL> select deptno,max(salary) from employee group by deptno having max(salary)>5000;
+
+    DEPTNO MAX(SALARY)
+---------- -----------
+        10       50000
+        20       25000
+
+26)Find all distinct column values from employee & department table.
+
+SQL> select deptno from employee union select deptno from department;
+
+    DEPTNO
+----------
+        10
+        20
+        30
+        40
+
+27)Find all column values with duplicate from employee & department table.
+
+SQL> select deptno from employee union all select deptno from department;
+
+    DEPTNO
+----------
+        20
+        30
+        30
+        10
+        20
+        20
+        10
+        10
+        20
+        30
+        40
+28)Find all column values which are common in both employee & department table.
+SQL> select deptno from employee intersect select deptno from department;
+
+    DEPTNO
+----------
+        10
+        20
+        30
+29)Find all distinct column values present in employee but not in department table.
+
+SQL> select deptno from employee minus select deptno from department;
+
+no rows selected
+
+SQL> select deptno from department minus select deptno from employee;
+
+    DEPTNO
+----------
+        40
+
+30)Display the number of employees in the department 30 who can earn a commission.
+
+SQL> select count(empno) from employee where deptno=30 and commission is not null;
+
+COUNT(EMPNO)
+------------
+           1
+
+
+
+
+
+
+
+
+ 
+
+ 
+ 
+
+
