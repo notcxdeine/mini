@@ -1,0 +1,24 @@
+-- Create the 'areas' table if it doesn't already exist
+CREATE TABLE areas (
+    radius NUMBER(5,2),
+    area NUMBER(10,2)
+);
+
+-- PL/SQL Block to calculate and insert values
+DECLARE
+    v_radius NUMBER(5,2);
+    v_area NUMBER(10,2);
+BEGIN
+    -- Loop through radii from 5 to 9
+    FOR v_radius IN 5..9 LOOP
+        -- Calculate the area of the circle
+        v_area := 3.14159 * POWER(v_radius, 2); -- Pi * r^2
+
+        -- Insert the radius and area into the 'areas' table
+        INSERT INTO areas (radius, area) VALUES (v_radius, v_area);
+
+        -- Commit the insert (optional, but good practice)
+        COMMIT;
+    END LOOP;
+END;
+/
